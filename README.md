@@ -129,7 +129,7 @@ The Lumiobot Whitepaper covers architecture, AI methodology, use cases, and the 
 | 👤 Founder on X | [@wxbitwhale](https://x.com/wxbitwhale) |
 | ⌥ GitHub | [botlumio/botlumio](https://github.com/botlumio/botlumio) |
 | 🔖 Orynth Marketplace | [orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot) |
-| 🌐 Website | [lumiobotml.fun](https://lumiobotml.fun) |
+| 🌐 Website | [lumiobotml.fun](https://lumiobot.fun) |
 
 ---
 
