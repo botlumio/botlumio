@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LUMIOBOT — AI Knowledge Extraction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon: #c8ff00;
+    --black: #080808;
+    --dark: #0d0d0d;
+    --card: #111111;
+    --border: #1e1e1e;
+    --white: #ffffff;
+    --gray: #888888;
+    --dim: #333333;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* NOISE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: rgba(8,8,8,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 5px;
+    color: var(--white);
+  }
+  .nav-logo span { color: var(--neon); }
+
+  .nav-cta {
+    background: var(--neon);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 10px 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    font-family: 'Space Mono', monospace;
+  }
+  .nav-cta:hover { background: var(--white); transform: translate(-2px,-2px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    padding: 110px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 56px 56px;
+    opacity: 0.5;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: up 0.7s ease 0.1s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(68px, 22vw, 148px);
+    line-height: 0.88;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: up 0.7s ease 0.2s forwards;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 .neon { color: var(--neon); display: block; }
+  .hero h1 .outline {
+    display: block;
+    -webkit-text-stroke: 2px rgba(255,255,255,0.3);
+    color: transparent;
+  }
+  .hero h1 .solid { display: block; }
+
+  .hero-sub {
+    font-size: 11px;
+    line-height: 2;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    max-width: 420px;
+    margin: 28px 0 40px;
+    opacity: 0;
+    animation: up 0.7s ease 0.35s forwards;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    animation: up 0.7s ease 0.45s forwards;
+    position: relative;
+    z-index: 1;
+    max-width: 320px;
+  }
+
+  .btn-main {
+    background: var(--neon);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 20px 28px;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid var(--neon);
+    transition: all 0.15s;
+  }
+  .btn-main:hover {
+    background: transparent;
+    color: var(--neon);
+    transform: translate(-3px,-3px);
+    box-shadow: 6px 6px 0 var(--neon);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 20px 28px;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--dim);
+    transition: all 0.15s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--neon);
+    color: var(--neon);
+    transform: translate(-3px,-3px);
+    box-shadow: 6px 6px 0 var(--dim);
+  }
+
+  /* TERMINAL BLOCK */
+  .terminal {
+    margin-top: 56px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 0;
+    opacity: 0;
+    animation: up 0.7s ease 0.55s forwards;
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+  }
+
+  .term-bar {
+    background: var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .dot.r { background: #ff5f57; }
+  .dot.o { background: #febc2e; }
+  .dot.g { background: var(--neon); }
+
+  .term-body {
+    padding: 20px 20px;
+    font-size: 12px;
+    line-height: 2;
+    color: var(--gray);
+  }
+
+  .term-body .cmd { color: var(--white); }
+  .term-body .neon { color: var(--neon); }
+  .term-body .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--neon);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 80px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sec-label {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--neon);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+  .step.visible { opacity: 1; transform: translateY(0); }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--border);
+    line-height: 1;
+    min-width: 60px;
+    transition: color 0.3s;
+  }
+  .step:hover .step-num { color: var(--neon); }
+
+  .step-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+  .step-content p {
+    font-size: 11px;
+    line-height: 1.9;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .step-arrow {
+    margin-left: auto;
+    font-size: 24px;
+    color: var(--dim);
+    padding-top: 12px;
+  }
+
+  /* ── FEATURES ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .feat {
+    background: var(--black);
+    padding: 32px 24px;
+    transition: background 0.2s;
+  }
+  .feat:hover { background: var(--card); }
+
+  .feat-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .feat h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+
+  .feat p {
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .feat-tag {
+    display: inline-block;
+    margin-top: 16px;
+    background: var(--neon);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+
+  /* ── DEMO OUTPUT ── */
+  .demo-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .demo-header {
+    background: var(--border);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+
+  .demo-body {
+    padding: 24px 20px;
+    font-size: 12px;
+    line-height: 2;
+  }
+
+  .demo-body .label { color: var(--neon); font-weight: 700; }
+  .demo-body .value { color: var(--white); }
+  .demo-body .muted { color: var(--gray); }
+  .demo-body .bullet { color: var(--neon); margin-right: 8px; }
+  .demo-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .price-card {
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .price-card:hover {
+    border-color: var(--neon);
+    transform: translate(-3px,-3px);
+    box-shadow: 6px 6px 0 var(--dim);
+  }
+  .price-card.featured {
+    border-color: var(--neon);
+    background: var(--card);
+  }
+
+  .price-badge {
+    position: absolute;
+    top: -1px; right: 24px;
+    background: var(--neon);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    text-transform: uppercase;
+  }
+
+  .price-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--neon);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-amount span {
+    font-size: 20px;
+    color: var(--gray);
+  }
+
+  .price-period {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+  .price-features li {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .price-features li::before {
+    content: '▶';
+    color: var(--neon);
+    font-size: 8px;
+  }
+
+  .price-btn {
+    display: block;
+    text-align: center;
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .price-btn.outline {
+    border: 1px solid var(--dim);
+    color: var(--white);
+  }
+  .price-btn.outline:hover { border-color: var(--neon); color: var(--neon); }
+  .price-btn.solid {
+    background: var(--neon);
+    color: var(--black);
+    border: 2px solid var(--neon);
+  }
+  .price-btn.solid:hover { background: transparent; color: var(--neon); }
+
+  /* ── TESTIMONIALS ── */
+  .testi-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .testi {
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    transition: border-color 0.2s;
+  }
+  .testi:hover { border-color: var(--neon); }
+
+  .testi-quote {
+    font-size: 12px;
+    line-height: 2;
+    color: var(--white);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .testi-avatar {
+    width: 36px; height: 36px;
+    background: var(--neon);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--black);
+    flex-shrink: 0;
+  }
+
+  .testi-info { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
+  .testi-info .name { color: var(--white); margin-bottom: 2px; }
+  .testi-info .role { color: var(--gray); }
+
+  /* ── FAQ ── */
+  .faq-list { display: flex; flex-direction: column; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: left;
+    padding: 24px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--neon); }
+
+  .faq-icon {
+    font-size: 20px;
+    color: var(--neon);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    font-size: 11px;
+    line-height: 2;
+    color: var(--gray);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .faq-item.open .faq-a {
+    max-height: 200px;
+    padding-bottom: 24px;
+  }
+
+  /* ── CTA FINAL ── */
+  .cta-final {
+    padding: 80px 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-final::before {
+    content: 'LUMIOBOT';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 30vw, 200px);
+    color: var(--border);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .cta-final h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 12vw, 80px);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .cta-final h2 span { color: var(--neon); }
+
+  .cta-final p {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .cta-final .btn-main {
+    display: inline-flex;
+    max-width: 320px;
+    margin: 0 auto;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 5px;
+  }
+  .footer-logo span { color: var(--neon); }
+
+  footer p {
+    font-size: 10px;
+    color: var(--dimgray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes up {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ── DESKTOP ── */
+  @media (min-width: 768px) {
+    nav { padding: 20px 48px; }
+    .hero { padding: 120px 48px 100px; }
+    section { padding: 100px 48px; }
+    .cta-final { padding: 100px 48px; }
+    footer { padding: 32px 48px; flex-direction: row; justify-content: space-between; text-align: left; }
+
+    .hero-btns { flex-direction: row; max-width: 100%; }
+    .btn-main, .btn-ghost { min-width: 220px; }
+
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { flex-direction: row; }
+    .price-card { flex: 1; }
+    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LUMIO<span>BOT</span></div>
+  <a href="https://t.me/ailumio_bot" class="nav-cta">OPEN BOT ↗</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-tag">⚡ AI-POWERED · KNOWLEDGE EXTRACTION</div>
+  <h1>
+    <span class="solid">THE</span>
+    <span class="neon">LUMIO</span>
+    <span class="outline">KNOWLEDGE</span>
+    <span class="solid">BOT.</span>
+  </h1>
+  <p class="hero-sub">
+    Send any YouTube link or article URL — Lumiobot instantly extracts key insights, summarizes the content, and delivers pure knowledge. Learn more in less time.
+  </p>
+  <div class="hero-btns">
+    <a href="https://t.me/ailumio_bot" class="btn-main">LAUNCH BOT ↗</a>
+    <a href="#how" class="btn-ghost">HOW IT WORKS →</a>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="dots">
+        <div class="dot r"></div>
+        <div class="dot o"></div>
+        <div class="dot g"></div>
+      </div>
+      LUMIOBOT · SESSION_ACTIVE
+    </div>
+    <div class="term-body">
+      <div><span class="cmd">$ lumio extract</span> <span class="neon">https://youtube.com/watch?v=...</span></div>
+      <div class="neon">✓ Transcript fetched · 12,400 tokens</div>
+      <div class="neon">✓ AI analysis complete · 3 sec</div>
+      <div>→ Summary ready · <span class="neon">5 key insights extracted</span><span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="sec-label">// 01 — HOW IT WORKS</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>SEND A LINK</h3>
+        <p>Paste any YouTube video, article, blog post, or web URL directly into the Telegram chat with Lumiobot.</p>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>AI EXTRACTS</h3>
+        <p>Lumiobot fetches the transcript or content, processes it through advanced AI, and identifies the core knowledge.</p>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>GET INSIGHTS</h3>
+        <p>Receive a clean, structured summary with key points, main takeaway, and everything you need — in seconds.</p>
+      </div>
+      <div class="step-arrow">→</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="sec-label">// 02 — WHAT LUMIOBOT EXTRACTS</div>
+  <div class="features-grid">
+    <div class="feat">
+      <span class="feat-icon">🎥</span>
+      <h3>YOUTUBE VIDEOS</h3>
+      <p>Any YouTube video — lectures, podcasts, interviews, tutorials. Lumiobot reads the full transcript and extracts pure knowledge.</p>
+      <span class="feat-tag">LIVE</span>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🌐</span>
+      <h3>WEB ARTICLES</h3>
+      <p>News articles, blog posts, research pages. Paste the URL and get the key information without reading the whole thing.</p>
+      <span class="feat-tag">LIVE</span>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">📄</span>
+      <h3>PDF DOCUMENTS</h3>
+      <p>Reports, whitepapers, academic papers. Upload or link a PDF and Lumiobot extracts the most important content.</p>
+      <span class="feat-tag">COMING SOON</span>
+    </div>
+    <div class="feat">
+      <span class="feat-icon">🎙️</span>
+      <h3>AUDIO & PODCASTS</h3>
+      <p>Voice notes and podcast episodes transcribed and summarized by AI. Your ears, but 10x faster.</p>
+      <span class="feat-tag">COMING SOON</span>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO OUTPUT -->
+<section id="demo">
+  <div class="sec-label">// 03 — EXAMPLE OUTPUT</div>
+  <div class="demo-box">
+    <div class="demo-header">
+      <span>LUMIOBOT · KNOWLEDGE EXTRACT</span>
+      <span style="color:var(--neon)">● LIVE</span>
+    </div>
+    <div class="demo-body">
+      <div><span class="label">📌 TITLE: </span><span class="value">The Future of AI in 2025 — Full Keynote</span></div>
+      <div><span class="label">⏱ READ TIME: </span><span class="value">3 min read</span> <span class="muted">(vs 47 min video)</span></div>
+      <hr>
+      <div><span class="label">📝 SUMMARY</span></div>
+      <div class="muted">The keynote explores how AI systems are rapidly shifting from language models to autonomous agents capable of real-world decision making. The speaker argues that 2025 marks a turning point where AI moves from assistant to co-worker...</div>
+      <hr>
+      <div><span class="label">💡 KEY POINTS</span></div>
+      <div><span class="bullet">▶</span><span class="value">AI agents will replace 30% of white-collar tasks by 2026</span></div>
+      <div><span class="bullet">▶</span><span class="value">Multimodal AI now processes text, image, audio simultaneously</span></div>
+      <div><span class="bullet">▶</span><span class="value">Open-source models are closing the gap with proprietary systems</span></div>
+      <div><span class="bullet">▶</span><span class="value">Memory and context windows expanding to 1M+ tokens</span></div>
+      <div><span class="bullet">▶</span><span class="value">Regulation will shape AI deployment more than technology will</span></div>
+      <hr>
+      <div><span class="label">🎯 MAIN TAKEAWAY: </span><span class="value">AI in 2025 is no longer a tool — it's a collaborator.</span></div>
+      <hr>
+      <div class="muted">🔆 Knowledge extracted by Lumiobot · lumiobot.com</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="sec-label">// 04 — PRICING</div>
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="price-name">FREE</div>
+      <div class="price-amount">$0<span>/mo</span></div>
+      <div class="price-period">FOREVER FREE</div>
+      <ul class="price-features">
+        <li>10 extractions / day</li>
+        <li>YouTube + Articles</li>
+        <li>Basic summary format</li>
+        <li>English only</li>
+      </ul>
+      <a href="https://t.me/ailumio_bot" class="price-btn outline">START FREE →</a>
+    </div>
+
+    <div class="price-card featured">
+      <div class="price-badge">POPULAR</div>
+      <div class="price-name">PRO</div>
+      <div class="price-amount">$9<span>/mo</span></div>
+      <div class="price-period">BILLED MONTHLY</div>
+      <ul class="price-features">
+        <li>Unlimited extractions</li>
+        <li>YouTube, Articles, PDF</li>
+        <li>Full structured output</li>
+        <li>Ask questions on content</li>
+        <li>Priority processing</li>
+      </ul>
+      <a href="https://t.me/ailumio_bot" class="price-btn solid">GET PRO →</a>
+    </div>
+
+    <div class="price-card">
+      <div class="price-name">TEAM</div>
+      <div class="price-amount">$29<span>/mo</span></div>
+      <div class="price-period">UP TO 10 USERS</div>
+      <ul class="price-features">
+        <li>Everything in Pro</li>
+        <li>Team knowledge base</li>
+        <li>Audio & podcast support</li>
+        <li>API access</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="https://t.me/ailumio_bot" class="price-btn outline">GET TEAM →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="sec-label">// 05 — WHAT USERS SAY</div>
+  <div class="testi-grid">
+    <div class="testi">
+      <p class="testi-quote">"I used to spend hours watching YouTube lectures. Now I just send the link to Lumiobot and get everything I need in 30 seconds. Game changer."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">A</div>
+        <div class="testi-info">
+          <div class="name">Alex R.</div>
+          <div class="role">PhD Student · Stanford</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <p class="testi-quote">"Our research team uses Lumiobot daily to process articles and reports. It saves us at least 3 hours every single day."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">S</div>
+        <div class="testi-info">
+          <div class="name">Sarah K.</div>
+          <div class="role">Research Lead · TechCorp</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <p class="testi-quote">"The structured output is incredibly clean. Title, summary, key points, takeaway — everything I need, nothing I don't."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">M</div>
+        <div class="testi-info">
+          <div class="name">Marco T.</div>
+          <div class="role">Content Creator · 500K followers</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <p class="testi-quote">"I learn 10x faster now. Sent 3 YouTube videos this morning and had all the key insights before my coffee was done."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">J</div>
+        <div class="testi-info">
+          <div class="name">James L.</div>
+          <div class="role">Entrepreneur · Berlin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="sec-label">// 06 — FAQ</div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How does Lumiobot extract YouTube content?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Lumiobot uses the official YouTube transcript API to fetch the full transcript of any video. It then processes the transcript through advanced AI to extract key points, generate a structured summary, and identify the main takeaway.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What languages are supported?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Currently Lumiobot responds in English. Support for additional languages including Indonesian, Spanish, and French is coming in Q2 2026. The bot can process YouTube videos in any language that has auto-generated transcripts.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How fast is the extraction?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Most extractions are completed in 5–15 seconds. Longer videos or complex articles may take up to 30 seconds. Pro users get priority processing for even faster results.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Does it work on private YouTube videos?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">No. Lumiobot can only access publicly available YouTube videos that have transcripts enabled. Private or unlisted videos without public transcripts cannot be processed.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I cancel my Pro subscription anytime?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes. You can cancel your Pro or Team subscription at any time directly through Telegram. Your access continues until the end of the billing period with no extra charges.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-final">
+  <h2>START LEARNING<br><span>SMARTER.</span></h2>
+  <p>Join thousands extracting knowledge every day.</p>
+  <a href="https://t.me/ailumio_bot" class="btn-main">OPEN LUMIOBOT ON TELEGRAM ↗</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">LUMIO<span>BOT</span></div>
+  <p>© 2026 LUMIOBOT · ALL RIGHTS RESERVED</p>
+  <p style="color:var(--neon)">LUMIOBOT.COM</p>
+</footer>
+
+<script>
+  // FAQ Toggle
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    item.classList.toggle('open');
+  }
+
+  // Scroll reveal for steps
+  const steps = document.querySelectorAll('.step');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 120);
+      }
+    });
+  }, { threshold: 0.1 });
+  steps.forEach(s => observer.observe(s));
+
+  // Typewriter terminal effect
+  const lines = [
+    { text: '$ lumio extract https://youtube.com/watch?v=dQw4w9WgXcQ', class: 'cmd' },
+    { text: '✓ Transcript fetched · 12,400 tokens', class: 'neon' },
+    { text: '✓ AI analysis complete · 3 sec', class: 'neon' },
+    { text: '→ 5 key insights extracted — ready.', class: '' },
+  ];
+
+  const termBody = document.querySelector('.term-body');
+  if (termBody) {
+    termBody.innerHTML = '';
+    let lineIdx = 0;
+    function typeLine() {
+      if (lineIdx >= lines.length) {
+        lineIdx = 0;
+        setTimeout(() => { termBody.innerHTML = ''; typeLine(); }, 3000);
+        return;
+      }
+      const line = lines[lineIdx];
+      const div = document.createElement('div');
+      div.innerHTML = `<span class="${line.class}"></span>`;
+      termBody.appendChild(div);
+      const span = div.querySelector('span');
+      let charIdx = 0;
+      const interval = setInterval(() => {
+        span.textContent += line.text[charIdx];
+        charIdx++;
+        if (charIdx >= line.text.length) {
+          clearInterval(interval);
+          lineIdx++;
+          setTimeout(typeLine, 300);
+        }
+      }, 18);
+    }
+    typeLine();
+  }
+</script>
+</body>
+</html>
