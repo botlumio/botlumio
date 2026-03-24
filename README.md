@@ -133,7 +133,7 @@ The Lumiobot Whitepaper covers architecture, AI methodology, use cases, and the 
 
 ---
 
-© 2026 LUMIOBOT · All Rights Reserved · [lumiobotml.fun](https://lumiobotml.fun)
+© 2026 LUMIOBOT · All Rights Reserved · [lumiobotml.fun](https://lumiobot.fun)
 
 <!--
 **botlumio/botlumio** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
