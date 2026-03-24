@@ -4,696 +4,234 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>LUMIOBOT — AI Knowledge Extraction</title>
+<meta name="description" content="Lumiobot extracts pure knowledge from any YouTube video or article. Send a link, get instant structured insights on Telegram.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --neon: #c8ff00;
     --black: #080808;
-    --dark: #0d0d0d;
     --card: #111111;
     --border: #1e1e1e;
     --white: #ffffff;
     --gray: #888888;
     --dim: #333333;
+    --dimgray: #444444;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Space Mono', monospace;
-    overflow-x: hidden;
-  }
-
-  /* NOISE */
+  body { background: var(--black); color: var(--white); font-family: 'Space Mono', monospace; overflow-x: hidden; }
   body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content: ''; position: fixed; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.3;
+    pointer-events: none; z-index: 9999; opacity: 0.3;
   }
 
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 24px;
-    background: rgba(8,8,8,0.95);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 5px;
-    color: var(--white);
-  }
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: rgba(8,8,8,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 5px; color: var(--white); text-decoration: none; }
   .nav-logo span { color: var(--neon); }
-
-  .nav-cta {
-    background: var(--neon);
-    color: var(--black);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 10px 16px;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: all 0.15s;
-    font-family: 'Space Mono', monospace;
-  }
+  .nav-links { display: none; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--neon); }
+  .nav-cta { background: var(--neon); color: var(--black); font-size: 10px; font-weight: 700; letter-spacing: 2px; padding: 10px 16px; text-decoration: none; text-transform: uppercase; transition: all 0.15s; font-family: 'Space Mono', monospace; white-space: nowrap; }
   .nav-cta:hover { background: var(--white); transform: translate(-2px,-2px); }
 
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    padding: 110px 24px 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .grid-bg {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 56px 56px;
-    opacity: 0.5;
-  }
-
-  .hero-tag {
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: var(--neon);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: up 0.7s ease 0.1s forwards;
-  }
-
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(68px, 22vw, 148px);
-    line-height: 0.88;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    opacity: 0;
-    animation: up 0.7s ease 0.2s forwards;
-    position: relative;
-    z-index: 1;
-  }
-
+  /* HERO */
+  .hero { min-height: 100vh; padding: 110px 24px 80px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
+  .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 56px 56px; opacity: 0.5; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; opacity: 0; animation: up 0.7s ease 0.05s forwards; position: relative; z-index: 1; align-items: center; }
+  .hero-tag { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; }
+  .orynth-badge img { display: block; height: 32px; width: auto; opacity: 0.9; transition: opacity 0.2s; }
+  .orynth-badge:hover img { opacity: 1; }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(68px, 22vw, 148px); line-height: 0.88; letter-spacing: 2px; margin-bottom: 8px; opacity: 0; animation: up 0.7s ease 0.2s forwards; position: relative; z-index: 1; }
   .hero h1 .neon { color: var(--neon); display: block; }
-  .hero h1 .outline {
-    display: block;
-    -webkit-text-stroke: 2px rgba(255,255,255,0.3);
-    color: transparent;
-  }
+  .hero h1 .outline { display: block; -webkit-text-stroke: 2px rgba(255,255,255,0.3); color: transparent; }
   .hero h1 .solid { display: block; }
+  .hero-sub { font-size: 11px; line-height: 2; color: var(--gray); text-transform: uppercase; letter-spacing: 1.5px; max-width: 420px; margin: 28px 0 40px; opacity: 0; animation: up 0.7s ease 0.35s forwards; position: relative; z-index: 1; }
+  .hero-btns { display: flex; flex-direction: column; gap: 12px; opacity: 0; animation: up 0.7s ease 0.45s forwards; position: relative; z-index: 1; max-width: 320px; }
 
-  .hero-sub {
-    font-size: 11px;
-    line-height: 2;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    max-width: 420px;
-    margin: 28px 0 40px;
-    opacity: 0;
-    animation: up 0.7s ease 0.35s forwards;
-    position: relative;
-    z-index: 1;
-  }
+  .btn-main { background: var(--neon); color: var(--black); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 3px; padding: 20px 28px; text-decoration: none; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--neon); transition: all 0.15s; }
+  .btn-main:hover { background: transparent; color: var(--neon); transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--neon); }
+  .btn-ghost { background: transparent; color: var(--white); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 3px; padding: 20px 28px; text-decoration: none; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--dim); transition: all 0.15s; }
+  .btn-ghost:hover { border-color: var(--neon); color: var(--neon); transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--dim); }
 
-  .hero-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    opacity: 0;
-    animation: up 0.7s ease 0.45s forwards;
-    position: relative;
-    z-index: 1;
-    max-width: 320px;
-  }
-
-  .btn-main {
-    background: var(--neon);
-    color: var(--black);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    padding: 20px 28px;
-    text-decoration: none;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 2px solid var(--neon);
-    transition: all 0.15s;
-  }
-  .btn-main:hover {
-    background: transparent;
-    color: var(--neon);
-    transform: translate(-3px,-3px);
-    box-shadow: 6px 6px 0 var(--neon);
-  }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--white);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    padding: 20px 28px;
-    text-decoration: none;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid var(--dim);
-    transition: all 0.15s;
-  }
-  .btn-ghost:hover {
-    border-color: var(--neon);
-    color: var(--neon);
-    transform: translate(-3px,-3px);
-    box-shadow: 6px 6px 0 var(--dim);
-  }
-
-  /* TERMINAL BLOCK */
-  .terminal {
-    margin-top: 56px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 0;
-    opacity: 0;
-    animation: up 0.7s ease 0.55s forwards;
-    position: relative;
-    z-index: 1;
-    max-width: 500px;
-  }
-
-  .term-bar {
-    background: var(--border);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gray);
-    text-transform: uppercase;
-  }
-
+  /* TERMINAL */
+  .terminal { margin-top: 48px; background: var(--card); border: 1px solid var(--border); opacity: 0; animation: up 0.7s ease 0.55s forwards; position: relative; z-index: 1; max-width: 500px; }
+  .term-bar { background: var(--border); padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; }
   .dots { display: flex; gap: 6px; }
-  .dot {
-    width: 10px; height: 10px; border-radius: 50%;
-  }
-  .dot.r { background: #ff5f57; }
-  .dot.o { background: #febc2e; }
-  .dot.g { background: var(--neon); }
-
-  .term-body {
-    padding: 20px 20px;
-    font-size: 12px;
-    line-height: 2;
-    color: var(--gray);
-  }
-
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.o { background: #febc2e; } .dot.g { background: var(--neon); }
+  .term-body { padding: 20px; font-size: 12px; line-height: 2; color: var(--gray); min-height: 100px; }
   .term-body .cmd { color: var(--white); }
   .term-body .neon { color: var(--neon); }
-  .term-body .cursor {
-    display: inline-block;
-    width: 8px;
-    height: 14px;
-    background: var(--neon);
-    animation: blink 1s step-end infinite;
-    vertical-align: middle;
-    margin-left: 4px;
-  }
 
-  /* ── SECTION BASE ── */
-  section {
-    padding: 80px 24px;
-    border-top: 1px solid var(--border);
-  }
+  /* SECTIONS */
+  section { padding: 80px 24px; border-top: 1px solid var(--border); }
+  .sec-label { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; margin-bottom: 32px; }
 
-  .sec-label {
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: var(--neon);
-    text-transform: uppercase;
-    margin-bottom: 32px;
-  }
-
-  /* ── HOW IT WORKS ── */
-  .steps { display: flex; flex-direction: column; gap: 0; }
-
-  .step {
-    display: flex;
-    gap: 24px;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
-    align-items: flex-start;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s ease;
-  }
+  /* HOW IT WORKS */
+  .steps { display: flex; flex-direction: column; }
+  .step { display: flex; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--border); align-items: flex-start; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
   .step.visible { opacity: 1; transform: translateY(0); }
-
-  .step-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 64px;
-    color: var(--border);
-    line-height: 1;
-    min-width: 60px;
-    transition: color 0.3s;
-  }
+  .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: var(--border); line-height: 1; min-width: 60px; transition: color 0.3s; }
   .step:hover .step-num { color: var(--neon); }
+  .step-content h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; margin-bottom: 8px; }
+  .step-content p { font-size: 11px; line-height: 1.9; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+  .step-arrow { margin-left: auto; font-size: 24px; color: var(--dim); padding-top: 12px; }
 
-  .step-content h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    color: var(--white);
-  }
-  .step-content p {
-    font-size: 11px;
-    line-height: 1.9;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .step-arrow {
-    margin-left: auto;
-    font-size: 24px;
-    color: var(--dim);
-    padding-top: 12px;
-  }
-
-  /* ── FEATURES ── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .feat {
-    background: var(--black);
-    padding: 32px 24px;
-    transition: background 0.2s;
-  }
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .feat { background: var(--black); padding: 32px 24px; transition: background 0.2s; }
   .feat:hover { background: var(--card); }
+  .feat-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+  .feat h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 10px; }
+  .feat p { font-size: 11px; line-height: 1.8; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+  .feat-tag { display: inline-block; margin-top: 16px; background: var(--neon); color: var(--black); font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 4px 10px; text-transform: uppercase; }
+  .feat-tag.soon { background: var(--dim); color: var(--gray); }
 
-  .feat-icon {
-    font-size: 28px;
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .feat h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    color: var(--white);
-  }
-
-  .feat p {
-    font-size: 11px;
-    line-height: 1.8;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .feat-tag {
-    display: inline-block;
-    margin-top: 16px;
-    background: var(--neon);
-    color: var(--black);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 4px 10px;
-    text-transform: uppercase;
-  }
-
-  /* ── DEMO OUTPUT ── */
-  .demo-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 0;
-  }
-
-  .demo-header {
-    background: var(--border);
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gray);
-    text-transform: uppercase;
-  }
-
-  .demo-body {
-    padding: 24px 20px;
-    font-size: 12px;
-    line-height: 2;
-  }
-
+  /* DEMO */
+  .demo-box { background: var(--card); border: 1px solid var(--border); }
+  .demo-header { background: var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; }
+  .demo-body { padding: 24px 20px; font-size: 12px; line-height: 2; }
   .demo-body .label { color: var(--neon); font-weight: 700; }
   .demo-body .value { color: var(--white); }
   .demo-body .muted { color: var(--gray); }
   .demo-body .bullet { color: var(--neon); margin-right: 8px; }
   .demo-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-  /* ── PRICING ── */
-  .pricing-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+  /* TEAM */
+  .team-grid { display: flex; flex-direction: column; gap: 16px; }
+  .team-card { border: 1px solid var(--border); padding: 28px 24px; display: flex; gap: 20px; align-items: flex-start; transition: border-color 0.2s; }
+  .team-card:hover { border-color: var(--neon); }
+  .team-avatar { width: 52px; height: 52px; background: var(--neon); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--black); flex-shrink: 0; }
+  .team-avatar.alt { background: var(--dim); color: var(--white); }
+  .team-info { flex: 1; }
+  .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 3px; margin-bottom: 4px; }
+  .team-role { font-size: 10px; color: var(--neon); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+  .team-bio { font-size: 11px; color: var(--gray); line-height: 1.8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .team-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 10px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border: 1px solid var(--dim); padding: 6px 12px; transition: all 0.2s; }
+  .team-link:hover { color: var(--neon); border-color: var(--neon); }
+  .team-flag { font-size: 10px; color: var(--dimgray); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; display: block; }
 
-  .price-card {
-    border: 1px solid var(--border);
-    padding: 32px 24px;
-    position: relative;
-    transition: all 0.2s;
-  }
-  .price-card:hover {
-    border-color: var(--neon);
-    transform: translate(-3px,-3px);
-    box-shadow: 6px 6px 0 var(--dim);
-  }
-  .price-card.featured {
-    border-color: var(--neon);
-    background: var(--card);
-  }
+  /* ROADMAP */
+  .roadmap { display: flex; flex-direction: column; position: relative; }
+  .roadmap::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .rm-item { display: flex; gap: 24px; padding: 24px 0; position: relative; opacity: 0; transform: translateX(-10px); transition: all 0.5s ease; }
+  .rm-item.visible { opacity: 1; transform: translateX(0); }
+  .rm-dot { width: 33px; height: 33px; border: 2px solid var(--border); background: var(--black); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; position: relative; z-index: 1; transition: all 0.3s; }
+  .rm-item.done .rm-dot { background: var(--neon); border-color: var(--neon); color: var(--black); font-weight: 700; }
+  .rm-item.active .rm-dot { border-color: var(--neon); color: var(--neon); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(200,255,0,0.4); } 50% { box-shadow: 0 0 0 8px rgba(200,255,0,0); } }
+  .rm-content { flex: 1; padding-top: 4px; }
+  .rm-date { font-size: 10px; color: var(--neon); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+  .rm-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 6px; }
+  .rm-desc { font-size: 11px; color: var(--gray); line-height: 1.8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rm-badge { display: inline-block; margin-top: 8px; font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 3px 10px; text-transform: uppercase; }
+  .rm-badge.done { background: var(--neon); color: var(--black); }
+  .rm-badge.active { border: 1px solid var(--neon); color: var(--neon); }
+  .rm-badge.planned { border: 1px solid var(--dim); color: var(--gray); }
 
-  .price-badge {
-    position: absolute;
-    top: -1px; right: 24px;
-    background: var(--neon);
-    color: var(--black);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 4px 12px;
-    text-transform: uppercase;
-  }
+  /* WHITEPAPER */
+  .wp-box { border: 1px solid var(--border); background: var(--card); padding: 40px 24px; position: relative; overflow: hidden; }
+  .wp-box::before { content: 'WP'; position: absolute; right: -10px; top: -10px; font-family: 'Bebas Neue', sans-serif; font-size: 120px; color: var(--border); pointer-events: none; opacity: 0.4; }
+  .wp-box h3 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; margin-bottom: 12px; }
+  .wp-box h3 span { color: var(--neon); }
+  .wp-box p { font-size: 11px; color: var(--gray); line-height: 2; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 24px; max-width: 480px; }
+  .wp-sections { display: flex; flex-direction: column; margin-bottom: 28px; }
+  .wp-sec { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: center; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); }
+  .wp-sec-num { color: var(--neon); min-width: 28px; font-weight: 700; }
 
-  .price-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 3px;
-    margin-bottom: 8px;
-  }
-
-  .price-amount {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 56px;
-    color: var(--neon);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .price-amount span {
-    font-size: 20px;
-    color: var(--gray);
-  }
-
-  .price-period {
-    font-size: 10px;
-    color: var(--gray);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 28px;
-  }
-
-  .price-features {
-    list-style: none;
-    margin-bottom: 28px;
-  }
-  .price-features li {
-    font-size: 11px;
-    color: var(--gray);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .price-features li::before {
-    content: '▶';
-    color: var(--neon);
-    font-size: 8px;
-  }
-
-  .price-btn {
-    display: block;
-    text-align: center;
-    padding: 16px;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.15s;
-  }
-  .price-btn.outline {
-    border: 1px solid var(--dim);
-    color: var(--white);
-  }
+  /* PRICING */
+  .pricing-grid { display: flex; flex-direction: column; gap: 16px; }
+  .price-card { border: 1px solid var(--border); padding: 32px 24px; position: relative; transition: all 0.2s; }
+  .price-card:hover { border-color: var(--neon); transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--dim); }
+  .price-card.featured { border-color: var(--neon); background: var(--card); }
+  .price-badge { position: absolute; top: -1px; right: 24px; background: var(--neon); color: var(--black); font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 4px 12px; text-transform: uppercase; }
+  .price-name { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 3px; margin-bottom: 8px; }
+  .price-amount { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--neon); line-height: 1; margin-bottom: 4px; }
+  .price-amount span { font-size: 20px; color: var(--gray); }
+  .price-period { font-size: 10px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; }
+  .price-features { list-style: none; margin-bottom: 28px; }
+  .price-features li { font-size: 11px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .price-features li::before { content: '▶'; color: var(--neon); font-size: 8px; }
+  .price-btn { display: block; text-align: center; padding: 16px; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; transition: all 0.15s; }
+  .price-btn.outline { border: 1px solid var(--dim); color: var(--white); }
   .price-btn.outline:hover { border-color: var(--neon); color: var(--neon); }
-  .price-btn.solid {
-    background: var(--neon);
-    color: var(--black);
-    border: 2px solid var(--neon);
-  }
+  .price-btn.solid { background: var(--neon); color: var(--black); border: 2px solid var(--neon); }
   .price-btn.solid:hover { background: transparent; color: var(--neon); }
 
-  /* ── TESTIMONIALS ── */
-  .testi-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .testi {
-    border: 1px solid var(--border);
-    padding: 28px 24px;
-    transition: border-color 0.2s;
-  }
+  /* TESTIMONIALS */
+  .testi-grid { display: flex; flex-direction: column; gap: 16px; }
+  .testi { border: 1px solid var(--border); padding: 28px 24px; transition: border-color 0.2s; }
   .testi:hover { border-color: var(--neon); }
-
-  .testi-quote {
-    font-size: 12px;
-    line-height: 2;
-    color: var(--white);
-    margin-bottom: 20px;
-    font-style: italic;
-  }
-
-  .testi-author {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .testi-avatar {
-    width: 36px; height: 36px;
-    background: var(--neon);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    color: var(--black);
-    flex-shrink: 0;
-  }
-
+  .testi-quote { font-size: 12px; line-height: 2; color: var(--white); margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 36px; height: 36px; background: var(--neon); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--black); flex-shrink: 0; }
   .testi-info { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
   .testi-info .name { color: var(--white); margin-bottom: 2px; }
   .testi-info .role { color: var(--gray); }
 
-  /* ── FAQ ── */
+  /* FAQ */
   .faq-list { display: flex; flex-direction: column; }
-
-  .faq-item {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .faq-q {
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--white);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-align: left;
-    padding: 24px 0;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q { width: 100%; background: none; border: none; color: var(--white); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-align: left; padding: 24px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; text-transform: uppercase; transition: color 0.2s; }
   .faq-q:hover { color: var(--neon); }
-
-  .faq-icon {
-    font-size: 20px;
-    color: var(--neon);
-    transition: transform 0.3s;
-    flex-shrink: 0;
-  }
+  .faq-icon { font-size: 20px; color: var(--neon); transition: transform 0.3s; flex-shrink: 0; }
   .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; font-size: 11px; line-height: 2; color: var(--gray); letter-spacing: 0.5px; text-transform: uppercase; }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 24px; }
 
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, padding 0.3s;
-    font-size: 11px;
-    line-height: 2;
-    color: var(--gray);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .faq-item.open .faq-a {
-    max-height: 200px;
-    padding-bottom: 24px;
-  }
+  /* LINKS */
+  .links-grid { display: flex; flex-direction: column; gap: 12px; }
+  .link-item { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 20px 24px; text-decoration: none; transition: all 0.2s; }
+  .link-item:hover { border-color: var(--neon); transform: translate(-3px,-3px); box-shadow: 4px 4px 0 var(--dim); }
+  .link-left { display: flex; align-items: center; gap: 16px; }
+  .link-icon { font-size: 22px; }
+  .link-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; color: var(--white); }
+  .link-desc { font-size: 10px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .link-arrow { font-size: 18px; color: var(--neon); }
 
-  /* ── CTA FINAL ── */
-  .cta-final {
-    padding: 80px 24px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-final::before {
-    content: 'LUMIOBOT';
-    position: absolute;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(80px, 30vw, 200px);
-    color: var(--border);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0.4;
-  }
-
-  .cta-final h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(40px, 12vw, 80px);
-    letter-spacing: 3px;
-    margin-bottom: 16px;
-    position: relative;
-  }
-
+  /* CTA FINAL */
+  .cta-final { padding: 80px 24px; border-top: 1px solid var(--border); text-align: center; position: relative; overflow: hidden; }
+  .cta-final::before { content: 'LUMIO'; position: absolute; font-family: 'Bebas Neue', sans-serif; font-size: clamp(80px, 30vw, 200px); color: var(--border); top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none; opacity: 0.3; }
+  .cta-final h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 12vw, 80px); letter-spacing: 3px; margin-bottom: 16px; position: relative; }
   .cta-final h2 span { color: var(--neon); }
+  .cta-final p { font-size: 11px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; position: relative; }
+  .cta-orynth { position: relative; display: flex; justify-content: center; margin-top: 24px; }
 
-  .cta-final p {
-    font-size: 11px;
-    color: var(--gray);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 40px;
-    position: relative;
-  }
-
-  .cta-final .btn-main {
-    display: inline-flex;
-    max-width: 320px;
-    margin: 0 auto;
-    justify-content: center;
-    gap: 12px;
-    position: relative;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-    text-align: center;
-  }
-
-  .footer-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 5px;
-  }
+  /* FOOTER */
+  footer { padding: 32px 24px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 20px; }
+  .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 5px; }
   .footer-logo span { color: var(--neon); }
+  .footer-links { display: flex; flex-direction: column; gap: 8px; }
+  .footer-links a { font-size: 10px; color: var(--gray); letter-spacing: 2px; text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--neon); }
+  .footer-social { display: flex; gap: 12px; flex-wrap: wrap; }
+  .social-btn { border: 1px solid var(--dim); padding: 8px 14px; font-size: 10px; letter-spacing: 2px; color: var(--gray); text-decoration: none; text-transform: uppercase; transition: all 0.2s; font-family: 'Space Mono', monospace; }
+  .social-btn:hover { border-color: var(--neon); color: var(--neon); }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); padding-top: 20px; }
+  .footer-bottom p { font-size: 10px; color: var(--dimgray); letter-spacing: 2px; text-transform: uppercase; }
 
-  footer p {
-    font-size: 10px;
-    color: var(--dimgray);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
+  /* ANIMATIONS */
+  @keyframes up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ── ANIMATIONS ── */
-  @keyframes up {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  /* ── DESKTOP ── */
+  /* DESKTOP */
   @media (min-width: 768px) {
-    nav { padding: 20px 48px; }
+    nav { padding: 18px 48px; }
+    .nav-links { display: flex; }
     .hero { padding: 120px 48px 100px; }
     section { padding: 100px 48px; }
     .cta-final { padding: 100px 48px; }
-    footer { padding: 32px 48px; flex-direction: row; justify-content: space-between; text-align: left; }
-
+    footer { padding: 40px 48px; }
     .hero-btns { flex-direction: row; max-width: 100%; }
     .btn-main, .btn-ghost { min-width: 220px; }
-
     .features-grid { grid-template-columns: 1fr 1fr; }
     .pricing-grid { flex-direction: row; }
     .price-card { flex: 1; }
     .testi-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .team-grid { display: grid; grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -701,44 +239,43 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">LUMIO<span>BOT</span></div>
+  <a href="#" class="nav-logo">LUMIO<span>BOT</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">HOW IT WORKS</a></li>
+    <li><a href="#team">TEAM</a></li>
+    <li><a href="#roadmap">ROADMAP</a></li>
+    <li><a href="#pricing">PRICING</a></li>
+    <li><a href="#whitepaper">WHITEPAPER</a></li>
+  </ul>
   <a href="https://t.me/ailumio_bot" class="nav-cta">OPEN BOT ↗</a>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="grid-bg"></div>
-  <div class="hero-tag">⚡ AI-POWERED · KNOWLEDGE EXTRACTION</div>
+  <div class="hero-badges">
+    <span class="hero-tag">⚡ AI-POWERED · KNOWLEDGE EXTRACTION</span>
+    <a href="https://orynth.dev/projects/lumio-bot" target="_blank" rel="noopener" class="orynth-badge">
+      <img src="https://orynth.dev/api/badge/lumio-bot?theme=dark&style=default" alt="Featured on Orynth" width="140" height="40" />
+    </a>
+  </div>
   <h1>
     <span class="solid">THE</span>
     <span class="neon">LUMIO</span>
     <span class="outline">KNOWLEDGE</span>
     <span class="solid">BOT.</span>
   </h1>
-  <p class="hero-sub">
-    Send any YouTube link or article URL — Lumiobot instantly extracts key insights, summarizes the content, and delivers pure knowledge. Learn more in less time.
-  </p>
+  <p class="hero-sub">Send any YouTube link or article URL — Lumiobot instantly extracts key insights, summarizes the content, and delivers pure knowledge. Learn more in less time.</p>
   <div class="hero-btns">
     <a href="https://t.me/ailumio_bot" class="btn-main">LAUNCH BOT ↗</a>
     <a href="#how" class="btn-ghost">HOW IT WORKS →</a>
   </div>
-
-  <!-- TERMINAL -->
   <div class="terminal">
     <div class="term-bar">
-      <div class="dots">
-        <div class="dot r"></div>
-        <div class="dot o"></div>
-        <div class="dot g"></div>
-      </div>
+      <div class="dots"><div class="dot r"></div><div class="dot o"></div><div class="dot g"></div></div>
       LUMIOBOT · SESSION_ACTIVE
     </div>
-    <div class="term-body">
-      <div><span class="cmd">$ lumio extract</span> <span class="neon">https://youtube.com/watch?v=...</span></div>
-      <div class="neon">✓ Transcript fetched · 12,400 tokens</div>
-      <div class="neon">✓ AI analysis complete · 3 sec</div>
-      <div>→ Summary ready · <span class="neon">5 key insights extracted</span><span class="cursor"></span></div>
-    </div>
+    <div class="term-body" id="termBody"></div>
   </div>
 </section>
 
@@ -748,26 +285,17 @@
   <div class="steps">
     <div class="step">
       <div class="step-num">01</div>
-      <div class="step-content">
-        <h3>SEND A LINK</h3>
-        <p>Paste any YouTube video, article, blog post, or web URL directly into the Telegram chat with Lumiobot.</p>
-      </div>
+      <div class="step-content"><h3>SEND A LINK</h3><p>Paste any YouTube video, article, blog post, or web URL directly into the Telegram chat with Lumiobot.</p></div>
       <div class="step-arrow">→</div>
     </div>
     <div class="step">
       <div class="step-num">02</div>
-      <div class="step-content">
-        <h3>AI EXTRACTS</h3>
-        <p>Lumiobot fetches the transcript or content, processes it through advanced AI, and identifies the core knowledge.</p>
-      </div>
+      <div class="step-content"><h3>AI EXTRACTS</h3><p>Lumiobot fetches the full transcript or content, processes it through advanced AI, and identifies the core knowledge inside.</p></div>
       <div class="step-arrow">→</div>
     </div>
     <div class="step">
       <div class="step-num">03</div>
-      <div class="step-content">
-        <h3>GET INSIGHTS</h3>
-        <p>Receive a clean, structured summary with key points, main takeaway, and everything you need — in seconds.</p>
-      </div>
+      <div class="step-content"><h3>GET INSIGHTS</h3><p>Receive a clean, structured summary with key points, main takeaway, and everything you need — in seconds.</p></div>
       <div class="step-arrow">→</div>
     </div>
   </div>
@@ -777,41 +305,18 @@
 <section id="features">
   <div class="sec-label">// 02 — WHAT LUMIOBOT EXTRACTS</div>
   <div class="features-grid">
-    <div class="feat">
-      <span class="feat-icon">🎥</span>
-      <h3>YOUTUBE VIDEOS</h3>
-      <p>Any YouTube video — lectures, podcasts, interviews, tutorials. Lumiobot reads the full transcript and extracts pure knowledge.</p>
-      <span class="feat-tag">LIVE</span>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🌐</span>
-      <h3>WEB ARTICLES</h3>
-      <p>News articles, blog posts, research pages. Paste the URL and get the key information without reading the whole thing.</p>
-      <span class="feat-tag">LIVE</span>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">📄</span>
-      <h3>PDF DOCUMENTS</h3>
-      <p>Reports, whitepapers, academic papers. Upload or link a PDF and Lumiobot extracts the most important content.</p>
-      <span class="feat-tag">COMING SOON</span>
-    </div>
-    <div class="feat">
-      <span class="feat-icon">🎙️</span>
-      <h3>AUDIO & PODCASTS</h3>
-      <p>Voice notes and podcast episodes transcribed and summarized by AI. Your ears, but 10x faster.</p>
-      <span class="feat-tag">COMING SOON</span>
-    </div>
+    <div class="feat"><span class="feat-icon">🎥</span><h3>YOUTUBE VIDEOS</h3><p>Any YouTube video — lectures, podcasts, interviews, tutorials. Lumiobot reads the full transcript and extracts pure knowledge.</p><span class="feat-tag">LIVE</span></div>
+    <div class="feat"><span class="feat-icon">🌐</span><h3>WEB ARTICLES</h3><p>News articles, blog posts, research pages. Paste the URL and get the key information without reading the whole thing.</p><span class="feat-tag">LIVE</span></div>
+    <div class="feat"><span class="feat-icon">📄</span><h3>PDF DOCUMENTS</h3><p>Reports, whitepapers, academic papers. Upload or link a PDF and Lumiobot extracts the most important content automatically.</p><span class="feat-tag soon">COMING SOON</span></div>
+    <div class="feat"><span class="feat-icon">🎙️</span><h3>AUDIO & PODCASTS</h3><p>Voice notes and podcast episodes transcribed and summarized by AI. Your ears, but 10x faster.</p><span class="feat-tag soon">COMING SOON</span></div>
   </div>
 </section>
 
-<!-- DEMO OUTPUT -->
+<!-- DEMO -->
 <section id="demo">
   <div class="sec-label">// 03 — EXAMPLE OUTPUT</div>
   <div class="demo-box">
-    <div class="demo-header">
-      <span>LUMIOBOT · KNOWLEDGE EXTRACT</span>
-      <span style="color:var(--neon)">● LIVE</span>
-    </div>
+    <div class="demo-header"><span>LUMIOBOT · KNOWLEDGE EXTRACT</span><span style="color:var(--neon)">● LIVE</span></div>
     <div class="demo-body">
       <div><span class="label">📌 TITLE: </span><span class="value">The Future of AI in 2025 — Full Keynote</span></div>
       <div><span class="label">⏱ READ TIME: </span><span class="value">3 min read</span> <span class="muted">(vs 47 min video)</span></div>
@@ -828,16 +333,148 @@
       <hr>
       <div><span class="label">🎯 MAIN TAKEAWAY: </span><span class="value">AI in 2025 is no longer a tool — it's a collaborator.</span></div>
       <hr>
-      <div class="muted">🔆 Knowledge extracted by Lumiobot · lumiobot.com</div>
+      <div class="muted">🔆 Knowledge extracted by Lumiobot · lumiobotml.fun</div>
     </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="sec-label">// 04 — THE TEAM</div>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">W</div>
+      <div class="team-info">
+        <div class="team-name">WXBITWHALE</div>
+        <div class="team-role">FOUNDER & LEAD DEV</div>
+        <div class="team-bio">Builder, researcher, and AI enthusiast. Obsessed with making knowledge more accessible through intelligent automation.</div>
+        <a href="https://x.com/wxbitwhale" target="_blank" rel="noopener" class="team-link">𝕏 @WXBITWHALE ↗</a>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar alt">H</div>
+      <div class="team-info">
+        <div class="team-name">HIRO NAKAMURA</div>
+        <div class="team-role">AI ENGINEER</div>
+        <div class="team-bio">Former NLP researcher specializing in transformer architectures and large-scale text summarization systems.</div>
+        <span class="team-flag">TOKYO, JAPAN 🇯🇵</span>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar alt">A</div>
+      <div class="team-info">
+        <div class="team-name">AXEL LINDQVIST</div>
+        <div class="team-role">PRODUCT & DESIGN</div>
+        <div class="team-bio">Product designer with 8 years crafting minimal, high-impact digital tools. Believes great UX is invisible.</div>
+        <span class="team-flag">STOCKHOLM, SWEDEN 🇸🇪</span>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar alt">Y</div>
+      <div class="team-info">
+        <div class="team-name">YUKI TANAKA</div>
+        <div class="team-role">BACKEND ENGINEER</div>
+        <div class="team-bio">Systems engineer expert in high-throughput API pipelines and real-time data processing at scale.</div>
+        <span class="team-flag">OSAKA, JAPAN 🇯🇵</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="sec-label">// 05 — ROADMAP 2026</div>
+  <div class="roadmap">
+    <div class="rm-item done">
+      <div class="rm-dot">✓</div>
+      <div class="rm-content">
+        <div class="rm-date">MARCH 2026</div>
+        <div class="rm-title">PRODUCT LISTING ON ORYNTH</div>
+        <div class="rm-desc">Lumiobot officially listed on Orynth marketplace. Public launch with YouTube & article extraction live.</div>
+        <span class="rm-badge done">COMPLETED</span>
+      </div>
+    </div>
+    <div class="rm-item active">
+      <div class="rm-dot">●</div>
+      <div class="rm-content">
+        <div class="rm-date">APRIL 2026</div>
+        <div class="rm-title">PRO TIER & SUBSCRIPTIONS</div>
+        <div class="rm-desc">Launch of Pro and Team plans with unlimited extractions, priority processing, and structured output upgrades.</div>
+        <span class="rm-badge active">IN PROGRESS</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot">○</div>
+      <div class="rm-content">
+        <div class="rm-date">MAY 2026</div>
+        <div class="rm-title">PDF & DOCUMENT SUPPORT</div>
+        <div class="rm-desc">Upload PDF files or link documents directly. Lumiobot extracts key content from whitepapers, reports, and academic papers.</div>
+        <span class="rm-badge planned">PLANNED</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot">○</div>
+      <div class="rm-content">
+        <div class="rm-date">JUNE 2026</div>
+        <div class="rm-title">INTERACTIVE Q&A MODE</div>
+        <div class="rm-desc">After extracting a link, users can ask follow-up questions. Lumiobot answers directly from the source context.</div>
+        <span class="rm-badge planned">PLANNED</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot">○</div>
+      <div class="rm-content">
+        <div class="rm-date">AUGUST 2026</div>
+        <div class="rm-title">AUDIO & PODCAST EXTRACTION</div>
+        <div class="rm-desc">Send podcast episodes or voice notes. Lumiobot transcribes via Whisper AI and generates structured summaries automatically.</div>
+        <span class="rm-badge planned">PLANNED</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot">○</div>
+      <div class="rm-content">
+        <div class="rm-date">OCTOBER 2026</div>
+        <div class="rm-title">PERSONAL KNOWLEDGE BASE</div>
+        <div class="rm-desc">Save and organize all extracted knowledge into a personal searchable library. Tag, filter, and revisit past extractions anytime.</div>
+        <span class="rm-badge planned">PLANNED</span>
+      </div>
+    </div>
+    <div class="rm-item">
+      <div class="rm-dot">○</div>
+      <div class="rm-content">
+        <div class="rm-date">DECEMBER 2026</div>
+        <div class="rm-title">LUMIOBOT API & INTEGRATIONS</div>
+        <div class="rm-desc">Public API launch. Integrate Lumiobot into Notion, Obsidian, Slack, and custom workflows. Full developer documentation released.</div>
+        <span class="rm-badge planned">PLANNED</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHITEPAPER -->
+<section id="whitepaper">
+  <div class="sec-label">// 06 — WHITEPAPER</div>
+  <div class="wp-box">
+    <h3>LUMIOBOT <span>WHITEPAPER</span></h3>
+    <p>A technical and product overview of the Lumiobot knowledge extraction system — covering architecture, AI methodology, use cases, and the vision for the future of personal knowledge management.</p>
+    <div class="wp-sections">
+      <div class="wp-sec"><span class="wp-sec-num">01</span>Abstract & Vision</div>
+      <div class="wp-sec"><span class="wp-sec-num">02</span>The Problem: Information Overload in the AI Age</div>
+      <div class="wp-sec"><span class="wp-sec-num">03</span>Solution Architecture & AI Pipeline</div>
+      <div class="wp-sec"><span class="wp-sec-num">04</span>Supported Data Sources & Extraction Methods</div>
+      <div class="wp-sec"><span class="wp-sec-num">05</span>Output Format & Structured Knowledge Schema</div>
+      <div class="wp-sec"><span class="wp-sec-num">06</span>Accuracy, Performance & Benchmarks</div>
+      <div class="wp-sec"><span class="wp-sec-num">07</span>Privacy, Security & Data Policy</div>
+      <div class="wp-sec"><span class="wp-sec-num">08</span>Roadmap & Future Research Directions</div>
+    </div>
+    <a href="https://github.com/botlumio/botlumio" target="_blank" rel="noopener" class="btn-ghost" style="display:inline-flex;gap:12px;max-width:300px;">READ ON GITHUB ↗</a>
   </div>
 </section>
 
 <!-- PRICING -->
 <section id="pricing">
-  <div class="sec-label">// 04 — PRICING</div>
+  <div class="sec-label">// 07 — PRICING</div>
   <div class="pricing-grid">
-
     <div class="price-card">
       <div class="price-name">FREE</div>
       <div class="price-amount">$0<span>/mo</span></div>
@@ -850,7 +487,6 @@
       </ul>
       <a href="https://t.me/ailumio_bot" class="price-btn outline">START FREE →</a>
     </div>
-
     <div class="price-card featured">
       <div class="price-badge">POPULAR</div>
       <div class="price-name">PRO</div>
@@ -865,7 +501,6 @@
       </ul>
       <a href="https://t.me/ailumio_bot" class="price-btn solid">GET PRO →</a>
     </div>
-
     <div class="price-card">
       <div class="price-name">TEAM</div>
       <div class="price-amount">$29<span>/mo</span></div>
@@ -879,167 +514,143 @@
       </ul>
       <a href="https://t.me/ailumio_bot" class="price-btn outline">GET TEAM →</a>
     </div>
-
   </div>
 </section>
 
 <!-- TESTIMONIALS -->
 <section id="testimonials">
-  <div class="sec-label">// 05 — WHAT USERS SAY</div>
+  <div class="sec-label">// 08 — WHAT USERS SAY</div>
   <div class="testi-grid">
     <div class="testi">
       <p class="testi-quote">"I used to spend hours watching YouTube lectures. Now I just send the link to Lumiobot and get everything I need in 30 seconds. Game changer."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">A</div>
-        <div class="testi-info">
-          <div class="name">Alex R.</div>
-          <div class="role">PhD Student · Stanford</div>
-        </div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar">A</div><div class="testi-info"><div class="name">Alex R.</div><div class="role">PhD Student · Stanford</div></div></div>
     </div>
     <div class="testi">
       <p class="testi-quote">"Our research team uses Lumiobot daily to process articles and reports. It saves us at least 3 hours every single day."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">S</div>
-        <div class="testi-info">
-          <div class="name">Sarah K.</div>
-          <div class="role">Research Lead · TechCorp</div>
-        </div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar">S</div><div class="testi-info"><div class="name">Sarah K.</div><div class="role">Research Lead · TechCorp</div></div></div>
     </div>
     <div class="testi">
       <p class="testi-quote">"The structured output is incredibly clean. Title, summary, key points, takeaway — everything I need, nothing I don't."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">M</div>
-        <div class="testi-info">
-          <div class="name">Marco T.</div>
-          <div class="role">Content Creator · 500K followers</div>
-        </div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar">M</div><div class="testi-info"><div class="name">Marco T.</div><div class="role">Content Creator · 500K followers</div></div></div>
     </div>
     <div class="testi">
       <p class="testi-quote">"I learn 10x faster now. Sent 3 YouTube videos this morning and had all the key insights before my coffee was done."</p>
-      <div class="testi-author">
-        <div class="testi-avatar">J</div>
-        <div class="testi-info">
-          <div class="name">James L.</div>
-          <div class="role">Entrepreneur · Berlin</div>
-        </div>
-      </div>
+      <div class="testi-author"><div class="testi-avatar">J</div><div class="testi-info"><div class="name">James L.</div><div class="role">Entrepreneur · Berlin</div></div></div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
 <section id="faq">
-  <div class="sec-label">// 06 — FAQ</div>
+  <div class="sec-label">// 09 — FAQ</div>
   <div class="faq-list">
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How does Lumiobot extract YouTube content?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Lumiobot uses the official YouTube transcript API to fetch the full transcript of any video. It then processes the transcript through advanced AI to extract key points, generate a structured summary, and identify the main takeaway.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        What languages are supported?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Currently Lumiobot responds in English. Support for additional languages including Indonesian, Spanish, and French is coming in Q2 2026. The bot can process YouTube videos in any language that has auto-generated transcripts.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        How fast is the extraction?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Most extractions are completed in 5–15 seconds. Longer videos or complex articles may take up to 30 seconds. Pro users get priority processing for even faster results.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Does it work on private YouTube videos?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">No. Lumiobot can only access publicly available YouTube videos that have transcripts enabled. Private or unlisted videos without public transcripts cannot be processed.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFaq(this)">
-        Can I cancel my Pro subscription anytime?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-a">Yes. You can cancel your Pro or Team subscription at any time directly through Telegram. Your access continues until the end of the billing period with no extra charges.</div>
-    </div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How does Lumiobot extract YouTube content?<span class="faq-icon">+</span></button><div class="faq-a">Lumiobot uses the YouTube transcript API to fetch the full transcript of any video. It then processes it through advanced AI to extract key points, generate a structured summary, and identify the main takeaway.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">What languages are supported?<span class="faq-icon">+</span></button><div class="faq-a">Lumiobot currently responds in English. Support for additional languages is planned for Q3 2026. It can process YouTube videos in any language with auto-generated transcripts.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">How fast is the extraction?<span class="faq-icon">+</span></button><div class="faq-a">Most extractions complete in 5–15 seconds. Longer videos may take up to 30 seconds. Pro users get priority processing for faster results.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Does it work on private YouTube videos?<span class="faq-icon">+</span></button><div class="faq-a">No. Lumiobot can only access publicly available YouTube videos with transcripts enabled. Private or unlisted videos cannot be processed.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Can I cancel my subscription anytime?<span class="faq-icon">+</span></button><div class="faq-a">Yes. Cancel at any time directly through Telegram. Access continues until end of the billing period with no extra charges.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Where can I find the source code?<span class="faq-icon">+</span></button><div class="faq-a">Available on GitHub at github.com/botlumio/botlumio — contributions, issues, and feature requests are welcome.</div></div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
+<!-- FIND US -->
+<section id="links">
+  <div class="sec-label">// 10 — FIND US</div>
+  <div class="links-grid">
+    <a href="https://t.me/ailumio_bot" target="_blank" rel="noopener" class="link-item">
+      <div class="link-left"><span class="link-icon">✈️</span><div><div class="link-name">TELEGRAM BOT</div><div class="link-desc">@ailumio_bot · Start extracting knowledge</div></div></div>
+      <span class="link-arrow">↗</span>
+    </a>
+    <a href="https://x.com/botlumio" target="_blank" rel="noopener" class="link-item">
+      <div class="link-left"><span class="link-icon">𝕏</span><div><div class="link-name">OFFICIAL X / TWITTER</div><div class="link-desc">@botlumio · Updates & news</div></div></div>
+      <span class="link-arrow">↗</span>
+    </a>
+    <a href="https://x.com/wxbitwhale" target="_blank" rel="noopener" class="link-item">
+      <div class="link-left"><span class="link-icon">👤</span><div><div class="link-name">FOUNDER ON X</div><div class="link-desc">@wxbitwhale · Behind the scenes</div></div></div>
+      <span class="link-arrow">↗</span>
+    </a>
+    <a href="https://github.com/botlumio/botlumio" target="_blank" rel="noopener" class="link-item">
+      <div class="link-left"><span class="link-icon">⌥</span><div><div class="link-name">GITHUB</div><div class="link-desc">botlumio/botlumio · Source & contributions</div></div></div>
+      <span class="link-arrow">↗</span>
+    </a>
+    <a href="https://orynth.dev/projects/lumio-bot" target="_blank" rel="noopener" class="link-item">
+      <div class="link-left"><span class="link-icon">🔖</span><div><div class="link-name">ORYNTH MARKETPLACE</div><div class="link-desc">Featured listing · orynth.dev</div></div></div>
+      <span class="link-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
 <section class="cta-final">
   <h2>START LEARNING<br><span>SMARTER.</span></h2>
-  <p>Join thousands extracting knowledge every day.</p>
-  <a href="https://t.me/ailumio_bot" class="btn-main">OPEN LUMIOBOT ON TELEGRAM ↗</a>
+  <p>Join thousands extracting knowledge every day — free to start.</p>
+  <a href="https://t.me/ailumio_bot" class="btn-main" style="display:inline-flex;max-width:360px;margin:0 auto 24px;justify-content:center;">OPEN LUMIOBOT ON TELEGRAM ↗</a>
+  <div class="cta-orynth">
+    <a href="https://orynth.dev/projects/lumio-bot" target="_blank" rel="noopener">
+      <img src="https://orynth.dev/api/badge/lumio-bot?theme=dark&style=default" alt="Featured on Orynth" width="260" height="80" />
+    </a>
+  </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">LUMIO<span>BOT</span></div>
-  <p>© 2026 LUMIOBOT · ALL RIGHTS RESERVED</p>
-  <p style="color:var(--neon)">LUMIOBOT.COM</p>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">LUMIO<span>BOT</span></div>
+      <p style="font-size:10px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-top:8px;">LUMIOBOTML.FUN</p>
+    </div>
+    <div class="footer-links">
+      <a href="#how">How It Works</a>
+      <a href="#team">Team</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#whitepaper">Whitepaper</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <div class="footer-social">
+      <a href="https://x.com/botlumio" target="_blank" rel="noopener" class="social-btn">𝕏 TWITTER</a>
+      <a href="https://github.com/botlumio/botlumio" target="_blank" rel="noopener" class="social-btn">GITHUB</a>
+      <a href="https://t.me/ailumio_bot" target="_blank" rel="noopener" class="social-btn">TELEGRAM</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 LUMIOBOT · ALL RIGHTS RESERVED</p>
+    <p style="color:var(--neon)">LUMIOBOTML.FUN</p>
+  </div>
 </footer>
 
 <script>
-  // FAQ Toggle
-  function toggleFaq(btn) {
-    const item = btn.parentElement;
-    item.classList.toggle('open');
-  }
+  function toggleFaq(btn) { btn.parentElement.classList.toggle('open'); }
 
-  // Scroll reveal for steps
-  const steps = document.querySelectorAll('.step');
+  const revealEls = document.querySelectorAll('.step, .rm-item');
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 120);
-      }
-    });
+    entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100); });
   }, { threshold: 0.1 });
-  steps.forEach(s => observer.observe(s));
+  revealEls.forEach(el => observer.observe(el));
 
-  // Typewriter terminal effect
   const lines = [
-    { text: '$ lumio extract https://youtube.com/watch?v=dQw4w9WgXcQ', class: 'cmd' },
-    { text: '✓ Transcript fetched · 12,400 tokens', class: 'neon' },
-    { text: '✓ AI analysis complete · 3 sec', class: 'neon' },
-    { text: '→ 5 key insights extracted — ready.', class: '' },
+    { t: '$ lumio extract https://youtube.com/watch?v=xK3bs1GhTk0', c: 'cmd' },
+    { t: '✓ Transcript fetched · 18,200 tokens', c: 'neon' },
+    { t: '✓ AI analysis complete · 4.2 sec', c: 'neon' },
+    { t: '→ 5 key insights extracted — ready.', c: '' },
   ];
-
-  const termBody = document.querySelector('.term-body');
-  if (termBody) {
-    termBody.innerHTML = '';
-    let lineIdx = 0;
-    function typeLine() {
-      if (lineIdx >= lines.length) {
-        lineIdx = 0;
-        setTimeout(() => { termBody.innerHTML = ''; typeLine(); }, 3000);
-        return;
-      }
-      const line = lines[lineIdx];
-      const div = document.createElement('div');
-      div.innerHTML = `<span class="${line.class}"></span>`;
-      termBody.appendChild(div);
-      const span = div.querySelector('span');
-      let charIdx = 0;
-      const interval = setInterval(() => {
-        span.textContent += line.text[charIdx];
-        charIdx++;
-        if (charIdx >= line.text.length) {
-          clearInterval(interval);
-          lineIdx++;
-          setTimeout(typeLine, 300);
-        }
-      }, 18);
-    }
-    typeLine();
+  const tb = document.getElementById('termBody');
+  let li = 0;
+  function typeLine() {
+    if (li >= lines.length) { li = 0; setTimeout(() => { tb.innerHTML = ''; typeLine(); }, 3500); return; }
+    const line = lines[li];
+    const div = document.createElement('div');
+    const span = document.createElement('span');
+    span.className = line.c;
+    div.appendChild(span);
+    tb.appendChild(div);
+    let ci = 0;
+    const iv = setInterval(() => {
+      span.textContent += line.t[ci++];
+      if (ci >= line.t.length) { clearInterval(iv); li++; setTimeout(typeLine, 280); }
+    }, 16);
   }
+  typeLine();
 </script>
 </body>
 </html>
