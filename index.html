@@ -214,6 +214,175 @@
   .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); padding-top: 20px; }
   .footer-bottom p { font-size: 10px; color: var(--dimgray); letter-spacing: 2px; text-transform: uppercase; }
 
+  /* TOKEN SECTION */
+  .token-section {
+    background: var(--black);
+    border-top: 3px solid var(--neon);
+    border-bottom: 3px solid var(--neon);
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .token-section::before {
+    content: '$LUMIO';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 25vw, 180px);
+    color: var(--border);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0.25;
+  }
+  .token-inner { position: relative; z-index: 1; }
+  .token-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .token-badge {
+    background: var(--neon);
+    color: var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    padding: 6px 16px;
+  }
+  .token-live {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--neon);
+    text-transform: uppercase;
+    border: 1px solid var(--neon);
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .token-live::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--neon);
+    border-radius: 50%;
+    animation: blink2 1.2s ease-in-out infinite;
+  }
+  @keyframes blink2 { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .token-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 10vw, 72px);
+    letter-spacing: 3px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .token-title span { color: var(--neon); }
+
+  .token-desc {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    line-height: 1.8;
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+
+  .ca-box {
+    background: var(--card);
+    border: 1px solid var(--neon);
+    padding: 0;
+    margin-bottom: 24px;
+    max-width: 640px;
+  }
+  .ca-label {
+    background: var(--neon);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    padding: 8px 16px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ca-chain {
+    background: var(--black);
+    color: var(--neon);
+    font-size: 9px;
+    padding: 3px 8px;
+    letter-spacing: 2px;
+  }
+  .ca-address {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ca-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--white);
+    letter-spacing: 1px;
+    word-break: break-all;
+    flex: 1;
+  }
+  .ca-copy {
+    background: var(--dim);
+    border: none;
+    color: var(--neon);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 8px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .ca-copy:hover { background: var(--neon); color: var(--black); }
+  .ca-copy.copied { background: var(--neon); color: var(--black); }
+
+  .token-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 480px;
+  }
+  .btn-jupiter {
+    background: var(--neon);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 20px 28px;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 2px solid var(--neon);
+    transition: all 0.15s;
+  }
+  .btn-jupiter:hover { background: transparent; color: var(--neon); transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--neon); }
+
+  .token-disclaimer {
+    margin-top: 16px;
+    font-size: 10px;
+    color: var(--dimgray);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.8;
+    max-width: 480px;
+  }
+
   /* ANIMATIONS */
   @keyframes up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -241,6 +410,7 @@
 <nav>
   <a href="#" class="nav-logo">LUMIO<span>BOT</span></a>
   <ul class="nav-links">
+    <li><a href="#token" style="color:var(--neon)">$LUMIO TOKEN</a></li>
     <li><a href="#how">HOW IT WORKS</a></li>
     <li><a href="#team">TEAM</a></li>
     <li><a href="#roadmap">ROADMAP</a></li>
@@ -278,6 +448,44 @@
     <div class="term-body" id="termBody"></div>
   </div>
 </section>
+
+<!-- $LUMIO TOKEN -->
+<div class="token-section" id="token">
+  <div class="token-inner">
+    <div class="token-top">
+      <div class="token-badge">$LUMIO</div>
+      <div class="token-live">TOKEN LIVE ON SOLANA</div>
+    </div>
+    <div class="token-title">BUY <span>$LUMIO</span><br>TOKEN.</div>
+    <p class="token-desc">
+      $LUMIO is the native token of the Lumiobot ecosystem — powering access, rewards, and governance. Available now on Solana via Jupiter Exchange.
+    </p>
+
+    <div class="ca-box">
+      <div class="ca-label">
+        CONTRACT ADDRESS (CA)
+        <span class="ca-chain">SOLANA</span>
+      </div>
+      <div class="ca-address">
+        <span class="ca-text" id="caText">9LqDfzyWwhwFcSUCoiiQRq3tQxqapqpAsvuACvWiory</span>
+        <button class="ca-copy" id="copyBtn" onclick="copyCA()">COPY ↗</button>
+      </div>
+    </div>
+
+    <div class="token-btns">
+      <a href="https://jup.ag/swap/SOL-9LqDfzyWwhwFcSUCoiiQRq3tQxqapqpAsvuACvWiory" target="_blank" rel="noopener" class="btn-jupiter">
+        BUY ON JUPITER EXCHANGE ↗
+      </a>
+      <a href="https://solscan.io/token/9LqDfzyWwhwFcSUCoiiQRq3tQxqapqpAsvuACvWiory" target="_blank" rel="noopener" class="btn-ghost" style="max-width:100%;">
+        VIEW ON SOLSCAN ↗
+      </a>
+    </div>
+
+    <p class="token-disclaimer">
+      ⚠ Cryptocurrency investments carry significant risk. Always do your own research (DYOR) before purchasing any token. This is not financial advice.
+    </p>
+  </div>
+</div>
 
 <!-- HOW IT WORKS -->
 <section id="how">
@@ -620,6 +828,16 @@
 </footer>
 
 <script>
+  function copyCA() {
+    const ca = '9LqDfzyWwhwFcSUCoiiQRq3tQxqapqpAsvuACvWiory';
+    navigator.clipboard.writeText(ca).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'COPIED ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY ↗'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
   function toggleFaq(btn) { btn.parentElement.classList.toggle('open'); }
 
   const revealEls = document.querySelectorAll('.step, .rm-item');
