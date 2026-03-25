@@ -1,151 +1,237 @@
-# LUMIOBOT — AI Knowledge Extraction
+# 🔆 LUMIOBOT
 
-> Send any YouTube link or article URL — Lumiobot instantly extracts key insights, summarizes the content, and delivers pure knowledge. Learn more in less time.
+> **Extract pure knowledge from any YouTube video or article — in seconds.**
 
 [![Featured on Orynth](https://orynth.dev/api/badge/lumio-bot?theme=dark&style=default)](https://orynth.dev/projects/lumio-bot)
+![Status](https://img.shields.io/badge/STATUS-LIVE-c8ff00?style=flat-square&labelColor=080808)
+![Platform](https://img.shields.io/badge/PLATFORM-TELEGRAM-c8ff00?style=flat-square&labelColor=080808)
+![License](https://img.shields.io/badge/LICENSE-MIT-c8ff00?style=flat-square&labelColor=080808)
+![Version](https://img.shields.io/badge/VERSION-1.0.0-c8ff00?style=flat-square&labelColor=080808)
 
 ---
 
-## What is Lumiobot?
+## WHAT IS LUMIOBOT?
 
-Lumiobot is an AI-powered Telegram bot that extracts pure knowledge from any YouTube video or web article. Instead of spending hours watching lectures or reading long articles, you simply send a link and get a clean, structured summary with key points and the main takeaway — in seconds.
+Lumiobot is an AI-powered Telegram bot that transforms any YouTube video or article URL into a clean, structured knowledge summary — in under 10 seconds.
+
+Stop watching 47-minute videos to find 3 key insights. Send the link. Get the knowledge. Done.
+
+```
+$ lumio extract https://youtube.com/watch?v=...
+✓ Transcript fetched · 18,200 tokens
+✓ AI analysis complete · 4.2 sec
+→ 5 key insights extracted — ready.
+```
 
 ---
 
-## How It Works
+## LIVE DEMO
 
-1. **Send a Link** — Paste any YouTube video, article, blog post, or web URL into the Telegram chat with Lumiobot.
-2. **AI Extracts** — Lumiobot fetches the full transcript or content, processes it through advanced AI, and identifies the core knowledge inside.
-3. **Get Insights** — Receive a clean, structured summary with key points, main takeaway, and everything you need — in seconds.
+👉 **[t.me/ailumio_bot](https://t.me/ailumio_bot)** — Try it free on Telegram  
+🌐 **[lumiobot.fun](https://lumiobot.fun)** — Official website  
+🔖 **[orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot)** — Marketplace listing
 
 ---
 
-## Features
+## FEATURES
 
 | Feature | Status |
 |---|---|
-| 🎥 YouTube Videos | ✅ Live |
-| 🌐 Web Articles | ✅ Live |
-| 📄 PDF Documents | 🔜 Coming Soon |
-| 🎙️ Audio & Podcasts | 🔜 Coming Soon |
+| YouTube video extraction | ✅ LIVE |
+| Web article extraction | ✅ LIVE |
+| Structured output (title, summary, key points, takeaway) | ✅ LIVE |
+| PDF document extraction | 🔜 Coming May 2026 |
+| Interactive Q&A on content | 🔜 Coming June 2026 |
+| Audio & podcast transcription | 🔜 Coming August 2026 |
+| Personal knowledge base | 🔜 Coming October 2026 |
+| Public API | 🔜 Coming December 2026 |
 
-### Example Output
+---
+
+## OUTPUT FORMAT
+
+Every extraction returns a clean, structured response:
 
 ```
-📌 TITLE: The Future of AI in 2025 — Full Keynote
-⏱ READ TIME: 3 min read (vs 47 min video)
+🔆 LUMIOBOT — Knowledge Extract
+
+📌 Title: [Title of the content]
+⏱ Est. read time: [X min read]
 
 📝 SUMMARY
-The keynote explores how AI systems are rapidly shifting from language models
-to autonomous agents capable of real-world decision making...
+[2-3 paragraph summary]
 
 💡 KEY POINTS
-▶ AI agents will replace 30% of white-collar tasks by 2026
-▶ Multimodal AI now processes text, image, audio simultaneously
-▶ Open-source models are closing the gap with proprietary systems
-▶ Memory and context windows expanding to 1M+ tokens
-▶ Regulation will shape AI deployment more than technology will
+▶ Point 1
+▶ Point 2
+▶ Point 3
+▶ Point 4
+▶ Point 5
 
-🎯 MAIN TAKEAWAY: AI in 2025 is no longer a tool — it's a collaborator.
+🎯 MAIN TAKEAWAY
+[The single most important insight]
+
+🔗 Source: [original link]
+─────────────────────
+🔆 Knowledge extracted by Lumiobot · lumiobot.fun
 ```
 
 ---
 
-## Pricing
+## TECH STACK
 
-| Plan | Price | Extractions | Features |
-|---|---|---|---|
-| **Free** | $0/mo | 10/day | YouTube + Articles, Basic summary, English only |
-| **Pro** | $9/mo | Unlimited | YouTube, Articles, PDF, Full structured output, Q&A mode, Priority processing |
-| **Team** | $29/mo | Unlimited | Everything in Pro + Team knowledge base, Audio/podcast support, API access, up to 10 users |
-
----
-
-## Roadmap 2026
-
-- ✅ **March 2026** — Public launch + Orynth marketplace listing (YouTube & article extraction live)
-- 🔄 **April 2026** — Pro Tier & Subscriptions (in progress)
-- ○ **May 2026** — PDF & Document Support
-- ○ **June 2026** — Interactive Q&A Mode
-- ○ **August 2026** — Audio & Podcast Extraction (via Whisper AI)
-- ○ **October 2026** — Personal Knowledge Base
-- ○ **December 2026** — Lumiobot Public API & Integrations (Notion, Obsidian, Slack)
+```
+Bot Framework     →  python-telegram-bot
+Transcript API    →  youtube-transcript-api
+Web Extraction    →  Jina AI Reader
+AI Processing     →  Claude API (Anthropic)
+Automation        →  n8n
+Hosting           →  Railway / VPS
+```
 
 ---
 
-## FAQ
+## QUICK START
 
-**How does Lumiobot extract YouTube content?**
-Lumiobot uses the YouTube transcript API to fetch the full transcript of any video, then processes it through advanced AI to extract key points, generate a structured summary, and identify the main takeaway.
+### 1. Clone the repo
+```bash
+git clone https://github.com/botlumio/botlumio.git
+cd botlumio
+```
 
-**What languages are supported?**
-Lumiobot currently responds in English. Support for additional languages is planned for Q3 2026. It can process YouTube videos in any language with auto-generated transcripts.
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-**How fast is the extraction?**
-Most extractions complete in 5–15 seconds. Longer videos may take up to 30 seconds. Pro users get priority processing for faster results.
+### 3. Set environment variables
+```bash
+cp .env.example .env
+```
 
-**Does it work on private YouTube videos?**
-No. Lumiobot can only access publicly available YouTube videos with transcripts enabled. Private or unlisted videos cannot be processed.
+Edit `.env`:
+```env
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+ANTHROPIC_API_KEY=your_anthropic_api_key
+JINA_API_KEY=your_jina_api_key
+```
 
-**Can I cancel my subscription anytime?**
-Yes. Cancel at any time directly through Telegram. Access continues until the end of the billing period with no extra charges.
+### 4. Run the bot
+```bash
+python bot.py
+```
 
 ---
 
-## Team
+## ENVIRONMENT VARIABLES
+
+| Variable | Required | Description |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN` | ✅ | From [@BotFather](https://t.me/BotFather) |
+| `ANTHROPIC_API_KEY` | ✅ | From [console.anthropic.com](https://console.anthropic.com) |
+| `JINA_API_KEY` | ✅ | From [jina.ai](https://jina.ai) |
+| `MAX_DAILY_FREE` | ❌ | Free tier daily limit (default: 10) |
+| `LOG_LEVEL` | ❌ | Logging level (default: INFO) |
+
+---
+
+## PROJECT STRUCTURE
+
+```
+botlumio/
+├── bot.py              # Main bot entry point
+├── handlers/
+│   ├── youtube.py      # YouTube extraction handler
+│   ├── article.py      # Web article handler
+│   └── commands.py     # Telegram commands (/start, /help)
+├── ai/
+│   ├── extractor.py    # AI extraction pipeline
+│   └── formatter.py    # Output formatter
+├── utils/
+│   ├── transcript.py   # YouTube transcript fetcher
+│   └── scraper.py      # Web content scraper
+├── requirements.txt
+├── .env.example
+└── README.md
+```
+
+---
+
+## ROADMAP 2026
+
+```
+✅ MARCH 2026     Product listing on Orynth marketplace
+🔄 APRIL 2026     Pro & Team subscription tiers
+○  MAY 2026       PDF & document support
+○  JUNE 2026      Interactive Q&A mode
+○  AUGUST 2026    Audio & podcast extraction
+○  OCTOBER 2026   Personal knowledge base
+○  DECEMBER 2026  Public API & integrations
+```
+
+---
+
+## PRICING
+
+| Plan | Price | Extractions |
+|---|---|---|
+| Free | $0/mo | 10/day |
+| Pro | $9/mo | Unlimited |
+| Team | $29/mo | Unlimited (10 users) |
+
+---
+
+## THE TEAM
 
 | Name | Role | Location |
 |---|---|---|
-| **WXBITWHALE** | Founder & Lead Dev | — |
-| **Hiro Nakamura** | AI Engineer | Tokyo, Japan 🇯🇵 |
-| **Axel Lindqvist** | Product & Design | Stockholm, Sweden 🇸🇪 |
-| **Yuki Tanaka** | Backend Engineer | Osaka, Japan 🇯🇵 |
+| [@wxbitwhale](https://x.com/wxbitwhale) | Founder & Lead Dev | — |
+| Hiro Nakamura | AI Engineer | Tokyo, Japan 🇯🇵 |
+| Axel Lindqvist | Product & Design | Stockholm, Sweden 🇸🇪 |
+| Yuki Tanaka | Backend Engineer | Osaka, Japan 🇯🇵 |
 
 ---
 
-## Whitepaper
+## CONTRIBUTING
 
-The Lumiobot Whitepaper covers architecture, AI methodology, use cases, and the vision for the future of personal knowledge management. Sections include:
+Contributions are welcome. Please open an issue first to discuss what you would like to change.
 
-1. Abstract & Vision
-2. The Problem: Information Overload in the AI Age
-3. Solution Architecture & AI Pipeline
-4. Supported Data Sources & Extraction Methods
-5. Output Format & Structured Knowledge Schema
-6. Accuracy, Performance & Benchmarks
-7. Privacy, Security & Data Policy
-8. Roadmap & Future Research Directions
+```bash
+# Fork the repo
+# Create your feature branch
+git checkout -b feature/your-feature
 
-📄 [Read on GitHub →](https://github.com/botlumio/botlumio)
+# Commit your changes
+git commit -m 'feat: add your feature'
+
+# Push and open a PR
+git push origin feature/your-feature
+```
 
 ---
 
-## Links
+## LINKS
 
-| Platform | Link |
+| | |
 |---|---|
-| ✈️ Telegram Bot | [@ailumio_bot](https://t.me/ailumio_bot) |
-| 𝕏 Twitter / X | [@botlumio](https://x.com/botlumio) |
-| 👤 Founder on X | [@wxbitwhale](https://x.com/wxbitwhale) |
-| ⌥ GitHub | [botlumio/botlumio](https://github.com/botlumio/botlumio) |
-| 🔖 Orynth Marketplace | [orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot) |
-| 🌐 Website | [lumiobotml.fun](https://lumiobot.fun) |
+| 🤖 Telegram Bot | [t.me/ailumio_bot](https://t.me/ailumio_bot) |
+| 🌐 Website | [lumiobot.fun](https://lumiobot.fun) |
+| 𝕏 Official X | [@botlumio](https://x.com/botlumio) |
+| 👤 Founder X | [@wxbitwhale](https://x.com/wxbitwhale) |
+| 🔖 Orynth | [orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot) |
 
 ---
 
-© 2026 LUMIOBOT · All Rights Reserved · [lumiobotml.fun](https://lumiobot.fun)
+## LICENSE
 
-<!--
-**botlumio/botlumio** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+MIT © 2026 Lumiobot — [lumiobot.fun](https://lumiobot.fun)
 
-Here are some ideas to get you started:
+---
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+<div align="center">
+
+**🔆 FROM ANY LINK TO PURE KNOWLEDGE — IN SECONDS.**
+
+[lumiobot.fun](https://lumiobot.fun) · [@botlumio](https://x.com/botlumio) · [t.me/ailumio_bot](https://t.me/ailumio_bot)
+
+</div>
