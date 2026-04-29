@@ -6,7 +6,7 @@
 # Telegram : https://t.me/ailumio_bot
 # GitHub   : https://github.com/botlumio/botlumio
 # X        : https://x.com/botlumio
-# Orynth   : https://orynth.dev/projects/lumio-bot
+# Token    : Coming soon on https://kickstart.easya.io/
 # ============================================================
 
 WORKFLOW = {
@@ -25,7 +25,7 @@ WORKFLOW = {
         "github"       : "https://github.com/botlumio/botlumio",
         "twitter"      : "https://x.com/botlumio",
         "founder"      : "https://x.com/wxbitwhale",
-        "orynth"       : "https://orynth.dev/projects/lumio-bot",
+        "token_launch" : "https://kickstart.easya.io/",
     },
 
     # ─────────────────────────────────────────────────────────

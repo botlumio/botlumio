@@ -2,7 +2,6 @@
 
 > **Extract pure knowledge from any YouTube video or article — in seconds.**
 
-[![Featured on Orynth](https://orynth.dev/api/badge/lumio-bot?theme=dark&style=default)](https://orynth.dev/projects/lumio-bot)
 ![Status](https://img.shields.io/badge/STATUS-LIVE-c8ff00?style=flat-square&labelColor=080808)
 ![Platform](https://img.shields.io/badge/PLATFORM-TELEGRAM-c8ff00?style=flat-square&labelColor=080808)
 ![License](https://img.shields.io/badge/LICENSE-MIT-c8ff00?style=flat-square&labelColor=080808)
@@ -28,8 +27,7 @@ $ lumio extract https://youtube.com/watch?v=...
 ## LIVE DEMO
 
 👉 **[t.me/ailumio_bot](https://t.me/ailumio_bot)** — Try it free on Telegram  
-🌐 **[lumiobot.fun](https://lumiobot.fun)** — Official website  
-🔖 **[orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot)** — Marketplace listing
+🌐 **[lumiobot.fun](https://lumiobot.fun)** — Official website
 
 ---
 
@@ -45,6 +43,14 @@ $ lumio extract https://youtube.com/watch?v=...
 | Audio & podcast transcription | 🔜 Coming August 2026 |
 | Personal knowledge base | 🔜 Coming October 2026 |
 | Public API | 🔜 Coming December 2026 |
+
+---
+
+## $LUMIO TOKEN
+
+🚀 **Coming soon on [kickstart.easya.io](https://kickstart.easya.io/)**
+
+Stay tuned for the official $LUMIO token launch. More details to be announced.
 
 ---
 
@@ -160,7 +166,7 @@ botlumio/
 ## ROADMAP 2026
 
 ```
-✅ MARCH 2026     Product listing on Orynth marketplace
+✅ MARCH 2026     Public launch — YouTube & article extraction live
 🔄 APRIL 2026     Pro & Team subscription tiers
 ○  MAY 2026       PDF & document support
 ○  JUNE 2026      Interactive Q&A mode
@@ -218,7 +224,7 @@ git push origin feature/your-feature
 | 🌐 Website | [lumiobot.fun](https://lumiobot.fun) |
 | 𝕏 Official X | [@botlumio](https://x.com/botlumio) |
 | 👤 Founder X | [@wxbitwhale](https://x.com/wxbitwhale) |
-| 🔖 Orynth | [orynth.dev/projects/lumio-bot](https://orynth.dev/projects/lumio-bot) |
+| 🚀 Token Launch | [kickstart.easya.io](https://kickstart.easya.io/) — Coming soon |
 
 ---
 
