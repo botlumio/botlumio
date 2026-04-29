@@ -2,10 +2,10 @@
 # LUMIOBOT — Full System Workflow
 # AI Knowledge Extraction Bot
 # ============================================================
-# Website  : https://lumiobotml.fun
+# Website  : https://lumiobot.fun
 # Telegram : https://t.me/ailumio_bot
 # GitHub   : https://github.com/botlumio/botlumio
-# X        : https://x.com/botlumio
+# X        : https://x.com/Zhenya718
 # Token    : Coming soon on https://kickstart.easya.io/
 # ============================================================
 
@@ -20,11 +20,11 @@ WORKFLOW = {
         "description"  : "AI-powered Telegram bot that extracts pure knowledge from any YouTube video or web article.",
         "version"      : "1.0.0",
         "status"       : "live",
-        "website"      : "https://lumiobotml.fun",
+        "website"      : "https://lumiobot.fun",
         "telegram_bot" : "https://t.me/ailumio_bot",
         "github"       : "https://github.com/botlumio/botlumio",
-        "twitter"      : "https://x.com/botlumio",
-        "founder"      : "https://x.com/wxbitwhale",
+        "twitter"      : "https://x.com/Zhenya718",
+        "founder"      : "https://x.com/Zhenya718",
         "token_launch" : "https://kickstart.easya.io/",
     },
 
@@ -246,7 +246,7 @@ WORKFLOW = {
     # TEAM
     # ─────────────────────────────────────────────────────────
     "team": {
-        "wxbitwhale"     : {"role": "Founder & Lead Dev",    "twitter": "https://x.com/wxbitwhale"},
+        "Zhenya718"     : {"role": "Founder & Lead Dev",    "twitter": "https://x.com/Zhenya718"},
         "hiro_nakamura"  : {"role": "AI Engineer",           "location": "Tokyo, Japan"},
         "axel_lindqvist" : {"role": "Product & Design",      "location": "Stockholm, Sweden"},
         "yuki_tanaka"    : {"role": "Backend Engineer",      "location": "Osaka, Japan"},

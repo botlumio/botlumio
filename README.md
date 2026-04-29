@@ -192,16 +192,20 @@ botlumio/
 
 | Name | Role | Location |
 |---|---|---|
-| [@wxbitwhale](https://x.com/wxbitwhale) | Founder & Lead Dev | — |
+| [@Zhenya718](https://x.com/Zhenya718) | Founder & Lead Dev | — |
 | Hiro Nakamura | AI Engineer | Tokyo, Japan 🇯🇵 |
 | Axel Lindqvist | Product & Design | Stockholm, Sweden 🇸🇪 |
 | Yuki Tanaka | Backend Engineer | Osaka, Japan 🇯🇵 |
+
+> The team listing (apart from the founder) is currently a placeholder while we
+> finalize public profiles for the rest of the crew.
 
 ---
 
 ## CONTRIBUTING
 
-Contributions are welcome. Please open an issue first to discuss what you would like to change.
+Contributions are welcome — please read [CONTRIBUTING.md](./CONTRIBUTING.md)
+and our [Code of Conduct](./CODE_OF_CONDUCT.md) before opening a PR.
 
 ```bash
 # Fork the repo
@@ -217,15 +221,33 @@ git push origin feature/your-feature
 
 ---
 
+## SECURITY
+
+We take security seriously. **Do not** open public issues for vulnerabilities.
+
+- Read the full [Security Policy](./SECURITY.md)
+- Report privately via [GitHub Security Advisories](https://github.com/botlumio/botlumio/security/advisories/new)
+- Or DM the founder on X: [@Zhenya718](https://x.com/Zhenya718)
+
+This repository is hardened with:
+
+- 🔐 **CodeQL** static analysis on every push/PR ([workflow](./.github/workflows/codeql.yml))
+- 🕵️ **Gitleaks** secret scanning ([workflow](./.github/workflows/secret-scan.yml))
+- 🤖 **Dependabot** weekly dependency & GitHub Actions updates ([config](./.github/dependabot.yml))
+- 📝 Issue, PR, and security templates under [`.github/`](./.github)
+
+---
+
 ## LINKS
 
 | | |
 |---|---|
 | 🤖 Telegram Bot | [t.me/ailumio_bot](https://t.me/ailumio_bot) |
 | 🌐 Website | [lumiobot.fun](https://lumiobot.fun) |
-| 𝕏 Official X | [@botlumio](https://x.com/botlumio) |
-| 👤 Founder X | [@wxbitwhale](https://x.com/wxbitwhale) |
+| 𝕏 Official X | [@Zhenya718](https://x.com/Zhenya718) |
+| 👤 Founder X | [@Zhenya718](https://x.com/Zhenya718) |
 | 🚀 Token Launch | [kickstart.easya.io](https://kickstart.easya.io/) — Coming soon |
+| 🔐 Security | [SECURITY.md](./SECURITY.md) |
 
 ---
 
@@ -239,6 +261,6 @@ MIT © 2026 Lumiobot — [lumiobot.fun](https://lumiobot.fun)
 
 **🔆 FROM ANY LINK TO PURE KNOWLEDGE — IN SECONDS.**
 
-[lumiobot.fun](https://lumiobot.fun) · [@botlumio](https://x.com/botlumio) · [t.me/ailumio_bot](https://t.me/ailumio_bot)
+[lumiobot.fun](https://lumiobot.fun) · [@Zhenya718](https://x.com/Zhenya718) · [t.me/ailumio_bot](https://t.me/ailumio_bot)
 
 </div>
