@@ -41,7 +41,7 @@
   .hero { min-height: 100vh; padding: 110px 24px 80px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
   .grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 56px 56px; opacity: 0.5; }
   .hero-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; opacity: 0; animation: up 0.7s ease 0.05s forwards; position: relative; z-index: 1; align-items: center; }
-  .hero-tag { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; }
+  .hero-tag { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; font-weight: 800; }
   .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(68px, 22vw, 148px); line-height: 0.88; letter-spacing: 2px; margin-bottom: 8px; opacity: 0; animation: up 0.7s ease 0.2s forwards; position: relative; z-index: 1; }
   .hero h1 .neon { color: var(--neon); display: block; }
   .hero h1 .outline { display: block; -webkit-text-stroke: 2px rgba(255,255,255,0.3); color: transparent; }
@@ -66,7 +66,7 @@
 
   /* SECTIONS */
   section { padding: 80px 24px; border-top: 1px solid var(--border); }
-  .sec-label { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; margin-bottom: 32px; }
+  .sec-label { font-size: 10px; letter-spacing: 5px; color: var(--neon); text-transform: uppercase; margin-bottom: 32px; font-weight: 800; }
 
   /* HOW IT WORKS */
   .steps { display: flex; flex-direction: column; }
@@ -86,7 +86,7 @@
   .feat h3 { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; margin-bottom: 10px; }
   .feat p { font-size: 11px; line-height: 1.8; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
   .feat-tag { display: inline-block; margin-top: 16px; background: var(--neon); color: var(--black); font-size: 9px; font-weight: 700; letter-spacing: 2px; padding: 4px 10px; text-transform: uppercase; }
-  .feat-tag.soon { background: var(--dim); color: var(--gray); }
+  .feat-tag.soon { background: var(--dim); color: var(--white); font-weight: 800; }
 
   /* DEMO */
   .demo-box { background: var(--card); border: 1px solid var(--border); }
@@ -257,6 +257,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    font-weight: 800;
   }
   .token-live::before {
     content: '';
@@ -420,7 +421,6 @@
 <section class="hero">
   <div class="grid-bg"></div>
   <div class="hero-badges">
-    <span class="hero-tag">⚡ AI-POWERED · KNOWLEDGE EXTRACTION</span>
     <span class="hero-tag" style="color:var(--white);border:1px solid var(--neon);padding:6px 10px;">◎ BUILT ON SOLANA</span>
     <a href="https://kickstart.easya.io/" target="_blank" rel="noopener" class="hero-tag" style="background:var(--neon);color:var(--black);padding:6px 12px;text-decoration:none;font-weight:700;">🚀 TODAY · TOKEN LAUNCH ON KICKSTART.EASYA.IO ↗</a>
   </div>
@@ -772,7 +772,7 @@
       <span class="link-arrow">↗</span>
     </a>
     <a href="https://kickstart.easya.io/" target="_blank" rel="noopener" class="link-item">
-      <div class="link-left"><span class="link-icon">🚀</span><div><div class="link-name">$LUMIO TOKEN LAUNCH</div><div class="link-desc">Coming soon · kickstart.easya.io</div></div></div>
+      <div class="link-left"><span class="link-icon">🚀</span><div><div class="link-name">$LUMIO TOKEN LAUNCH</div><div class="link-desc"><strong style="color:var(--white);font-weight:800;">COMING SOON</strong> · kickstart.easya.io</div></div></div>
       <span class="link-arrow">↗</span>
     </a>
   </div>
