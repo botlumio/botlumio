@@ -166,13 +166,14 @@ botlumio/
 ## ROADMAP 2026
 
 ```
-✅ MARCH 2026     Public launch — YouTube & article extraction live
-🔄 APRIL 2026     Pro & Team subscription tiers
-○  MAY 2026       PDF & document support
-○  JUNE 2026      Interactive Q&A mode
-○  AUGUST 2026    Audio & podcast extraction
-○  OCTOBER 2026   Personal knowledge base
-○  DECEMBER 2026  Public API & integrations
+✅ MARCH 2026          Public launch — YouTube & article extraction live
+🚀 APRIL 29, 2026      $LUMIO TOKEN LAUNCH — live today on kickstart.easya.io
+🔄 APRIL 2026          Pro & Team subscription tiers
+○  MAY 2026            PDF & document support
+○  JUNE 2026           Interactive Q&A mode
+○  AUGUST 2026         Audio & podcast extraction
+○  OCTOBER 2026        Personal knowledge base
+○  DECEMBER 2026       Public API & integrations
 ```
 
 ---
